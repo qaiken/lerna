@@ -29,6 +29,7 @@ const getTwoFactorAuthRequired = require("../lib/get-two-factor-auth-required");
 const commitChangeToPackage = require("@lerna-test/commit-change-to-package");
 const loggingOutput = require("@lerna-test/logging-output");
 const initFixture = require("@lerna-test/init-fixture")(__dirname);
+const path = require("path");
 
 // file under test
 const lernaPublish = require("@lerna-test/command-runner")(require("../command"));
@@ -318,7 +319,7 @@ Map {
       for (const name of ["package-1", "package-2"]) {
         expect(packDirectory).toHaveBeenCalledWith(
           expect.objectContaining({ name }),
-          expect.stringContaining(`packages/${name}/dist`),
+          expect.stringContaining(path.join("packages", name, "dist")),
           expect.any(Object)
         );
       }
