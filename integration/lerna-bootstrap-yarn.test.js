@@ -2,9 +2,27 @@
 
 const globby = require("globby");
 const normalizePath = require("normalize-path");
+const pathKey = require("path-key");
 
 const cliRunner = require("@lerna-test/cli-runner");
 const initFixture = require("@lerna-test/init-fixture")(__dirname);
+
+const pathName = pathKey(); // PATH (POSIX) or PATH/path/Path (Windows)
+const existingPath = process.env[pathName];
+
+// The Node docs (https://nodejs.org/api/process.html#process_process_env)
+// explicitly say: "On Windows operating systems, environment variables
+// are case-insensitive" However, this isn't entirely true, at least within
+// AppVeyor. Following code sets three different variables:
+//
+// process.env.path = "foo";
+// process.env.Path = "bar";
+// process.env.PATH = "baz";
+//
+// Following lines consolidate the variables into one.
+delete process.env.path;
+delete process.env.Path;
+process.env.PATH = existingPath;
 
 test("lerna bootstrap --npm-client yarn", async () => {
   const cwd = await initFixture("lerna-bootstrap");
