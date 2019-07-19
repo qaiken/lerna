@@ -316,13 +316,16 @@ Map {
 
       await lernaPublish(cwd)("--contents", "dist");
 
-      for (const name of ["package-1", "package-2"]) {
-        expect(packDirectory).toHaveBeenCalledWith(
-          expect.objectContaining({ name }),
-          expect.stringContaining(path.join("packages", name, "dist")),
-          expect.any(Object)
-        );
-      }
+      expect(packDirectory).toHaveBeenCalledWith(
+        expect.objectContaining({ name: "package-1" }),
+        expect.stringContaining(path.normalize("packages/package-1/dist")),
+        expect.any(Object)
+      );
+      expect(packDirectory).toHaveBeenCalledWith(
+        expect.objectContaining({ name: "package-2" }),
+        expect.stringContaining(path.normalize("packages/package-2/dist")),
+        expect.any(Object)
+      );
     });
   });
 
@@ -340,12 +343,12 @@ Map {
 
       expect(packDirectory).toHaveBeenCalledWith(
         expect.objectContaining({ name: "package-1" }),
-        expect.stringMatching(/packages\/package-1\/dist$/),
+        expect.stringMatching(/packages[\\/]+package-1[\\/]+dist$/),
         expect.any(Object)
       );
       expect(packDirectory).toHaveBeenCalledWith(
         expect.objectContaining({ name: "package-2" }),
-        expect.stringMatching(/packages\/package-2$/),
+        expect.stringMatching(/packages[\\/]+package-2$/),
         expect.any(Object)
       );
     });
